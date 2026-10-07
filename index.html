@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>קטלוג חומרים – ספר שמואל ב (כיתה ו׳)</title>
+<style>
+  :root {
+    --bg: #eff6ff; --card: #ffffff; --ink: #17203a; --muted: #5b6b8c;
+    --accent: #1d4ed8; --accent2: #d97706; --border: #e1e9fb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 350px, #fffbeb 100%);
+    color: var(--ink); min-height: 100vh;
+  }
+  header { padding: 30px 20px 18px; text-align: center; position: relative; }
+  .instructions-box {
+    position: absolute; top: 18px; right: 20px; max-width: 240px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 12px 14px; text-align: right; font-size: 0.76rem; line-height: 1.5;
+    color: var(--muted); box-shadow: 0 2px 8px rgba(29,78,216,0.08);
+  }
+  .instructions-box b { color: var(--accent); }
+  .instructions-box .reset-link {
+    display: inline-block; margin-top: 8px; color: #b91c1c; cursor: pointer;
+    text-decoration: underline; font-size: 0.74rem;
+  }
+  @media (max-width: 800px) {
+    .instructions-box { position: static; max-width: 420px; margin: 14px auto 0; }
+  }
+  header h1 {
+    margin: 0 0 6px; font-size: 1.9rem;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+  .search-wrap {
+    max-width: 700px; margin: 16px auto 0; padding: 0 20px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;
+  }
+  #search {
+    flex: 1; min-width: 220px; padding: 12px 16px; border-radius: 12px;
+    border: 1px solid var(--border); font-size: 1rem; background: var(--card);
+    box-shadow: 0 1px 4px rgba(29,78,216,0.07);
+  }
+  #search:focus { outline: 2px solid var(--accent2); }
+  .show-hidden-toggle {
+    display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--muted);
+    background: var(--card); border: 1px solid var(--border); border-radius: 999px;
+    padding: 8px 14px; cursor: pointer; white-space: nowrap;
+  }
+  .tabs {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    padding: 18px 20px 10px; max-width: 1080px; margin: 0 auto;
+  }
+  .tab-btn {
+    flex-shrink: 0; display: flex; align-items: center; gap: 6px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 999px;
+    padding: 9px 16px; cursor: pointer; font-size: 0.88rem; color: var(--ink);
+    white-space: nowrap; transition: all .15s;
+  }
+  .tab-btn:hover { border-color: var(--accent2); }
+  .tab-btn.active {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: white; border-color: transparent;
+  }
+  .tab-count { background: rgba(0,0,0,0.08); border-radius: 999px; padding: 1px 8px; font-size: 0.75rem; }
+  .tab-btn.active .tab-count { background: rgba(255,255,255,0.28); }
+  main { max-width: 920px; margin: 0 auto; padding: 10px 20px 60px; }
+  .topic-heading { display: flex; align-items: baseline; gap: 10px; margin: 18px 0 12px; }
+  .topic-heading h2 { margin: 0; font-size: 1.4rem; }
+  .topic-heading span.count { color: var(--muted); font-size: 0.9rem; }
+  .category-group {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    margin-bottom: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(29,78,216,0.05);
+  }
+  .category-header {
+    padding: 13px 18px; display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; background: linear-gradient(90deg, #eef4ff, #ffffff);
+  }
+  .category-title { font-weight: 600; font-size: 0.98rem; }
+  .category-count { font-size: 0.78rem; color: var(--muted); background: var(--bg); padding: 3px 10px; border-radius: 999px; }
+  .category-toggle { color: var(--accent); font-size: 0.9rem; margin-inline-start: 10px; }
+  .file-list { display: block; }
+  .file-list.collapsed { display: none; }
+  .file-row-wrap { display: flex; align-items: center; gap: 2px; border-top: 1px solid var(--border); transition: background .12s; }
+  .file-row-wrap:hover { background: #f7faff; }
+  .file-row-wrap.is-hidden { opacity: 0.45; }
+  .icon-btn {
+    flex-shrink: 0; background: none; border: none; cursor: pointer; font-size: 1.02rem;
+    padding: 10px 5px; line-height: 1; color: #a9b8dd; transition: transform .1s;
+  }
+  .icon-btn:hover { transform: scale(1.18); color: var(--accent); }
+  .rating-box { display: flex; align-items: center; gap: 1px; flex-shrink: 0; padding: 4px 6px; border-radius: 8px; }
+  .rating-box.mine { background: #fff7e0; box-shadow: inset 0 0 0 1px #f5c94d; }
+  .rating-star { cursor: pointer; font-size: 0.95rem; color: #d8ddec; transition: transform .08s; line-height: 1; }
+  .rating-star:hover { transform: scale(1.2); }
+  .rating-star.filled { color: #f5b301; }
+  .rating-meta { font-size: 0.66rem; color: var(--muted); margin-inline-start: 5px; white-space: nowrap; }
+  .file-row { display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 0; text-decoration: none; color: var(--ink); flex: 1; min-width: 0; }
+  .file-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0; }
+  .file-name { flex: 1; font-size: 0.9rem; line-height: 1.35; }
+  .file-name.renamed::after { content: " (שם ערוך)"; font-size: 0.68rem; color: var(--accent2); font-weight: 400; }
+  .file-size { font-size: 0.72rem; color: var(--muted); flex-shrink: 0; white-space: nowrap; }
+  .file-type-badge { font-size: 0.7rem; padding: 2px 9px; border-radius: 999px; flex-shrink: 0; white-space: nowrap; }
+  .hidden-badge { font-size: 0.68rem; padding: 2px 8px; border-radius: 999px; background: #fee2e2; color: #b91c1c; flex-shrink: 0; }
+  .empty-state { text-align: center; color: var(--muted); padding: 60px 20px; display: none; }
+  footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 20px; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(23,32,58,0.45); display: none; align-items: center; justify-content: center; z-index: 50; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: var(--card); border-radius: 16px; padding: 22px; max-width: 360px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+  .modal-box h3 { margin: 0 0 14px; font-size: 1.05rem; }
+  .modal-box label { display: block; font-size: 0.82rem; color: var(--muted); margin: 12px 0 4px; }
+  .modal-box select { width: 100%; padding: 9px 10px; border-radius: 9px; border: 1px solid var(--border); font-size: 0.9rem; background: #fff; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 18px; justify-content: flex-end; }
+  .modal-btn { padding: 9px 18px; border-radius: 9px; border: none; cursor: pointer; font-size: 0.88rem; }
+  .modal-btn.save { background: var(--accent); color: white; }
+  .modal-btn.cancel { background: var(--bg); color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="instructions-box">
+    <b>⭐ דירוג משותף</b><br>
+    לוחצים על אחד מ-5 הכוכבים ליד כל קובץ כדי לדרג אותו. הדירוג נשמר בענן ומשותף לכל מי שפותח את הקטלוג הזה.<br><br>
+    <b>✏️ שינוי שם | 🙈 הסתרה | 📁 העברה</b><br>
+    אפשר לערוך שם תצוגה, להסתיר קובץ, או להעביר אותו לנושא/קטגוריה אחרים - שינויים אלו אישיים ונשמרים רק אצלך בדפדפן.
+    <div class="reset-link" id="resetLink">איפוס ההתאמות האישיות שלי</div>
+  </div>
+  <h1>קטלוג חומרים – ספר שמואל ב (כיתה ו׳)</h1>
+  <p id="fileCountLine">60 פריטים לפי פרקים – 54 קבצים שמורים כאן, והשאר קישורים</p>
+</header>
+
+<div class="search-wrap">
+  <input id="search" type="text" placeholder="חיפוש בכל הנושאים לפי שם קובץ..." />
+  <label class="show-hidden-toggle">
+    <input type="checkbox" id="showHiddenChk" />
+    הצג קבצים מוסתרים
+  </label>
+</div>
+
+<div class="tabs" id="tabs"></div>
+
+<main id="main"></main>
+<div class="empty-state" id="emptyState">לא נמצאו קבצים תואמים לחיפוש</div>
+
+<footer>
+  <div style="font-weight:600; color:var(--accent); margin-bottom:4px;">הרב יהודה טאוב</div>
+  <div>הקבצים שמורים באתר זה; סרטונים, תיקיות ואתרים נפתחים במקורם</div>
+</footer>
+
+<div class="modal-overlay" id="moveModal">
+  <div class="modal-box">
+    <h3>📁 העברת קובץ</h3>
+    <label>נושא יעד</label>
+    <select id="moveTopicSelect"></select>
+    <label>קטגוריה יעד</label>
+    <select id="moveCategorySelect"></select>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" id="moveCancelBtn">ביטול</button>
+      <button class="modal-btn save" id="moveSaveBtn">שמירה</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import {
+  getFirestore, doc, getDocs, collection, query, where, documentId, runTransaction
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+const firebaseConfig = {"apiKey": "AIzaSyBgjtJk9Wrw-lPpFlPBaQ6RHfqQ58R58LA", "authDomain": "gamma-catalog.firebaseapp.com", "projectId": "gamma-catalog", "storageBucket": "gamma-catalog.firebasestorage.app", "messagingSenderId": "184606827021", "appId": "1:184606827021:web:e39a832b5bc12fe87aeb44"};
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+
+const ratingsCache = new Map(); // id -> {sum, count}
+
+function chunkArr(arr, n) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
+  return out;
+}
+
+async function fetchRatings(ids) {
+  const need = [...new Set(ids)].filter(id => !ratingsCache.has(id));
+  if (need.length === 0) return;
+  const batches = chunkArr(need, 10);
+  await Promise.all(batches.map(async (b) => {
+    b.forEach(id => ratingsCache.set(id, { sum: 0, count: 0 }));
+    try {
+      const q = query(collection(db, 'ratings'), where(documentId(), 'in', b));
+      const snap = await getDocs(q);
+      snap.forEach(d => ratingsCache.set(d.id, d.data()));
+    } catch (e) {
+      console.error('fetchRatings failed', e);
+    }
+  }));
+}
+
+async function submitRating(id, newValue, oldValue) {
+  const ref = doc(db, 'ratings', id);
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref);
+    let sum = 0, count = 0;
+    if (snap.exists()) { sum = snap.data().sum || 0; count = snap.data().count || 0; }
+    if (oldValue) { sum += (newValue - oldValue); } else { sum += newValue; count += 1; }
+    tx.set(ref, { sum, count });
+  });
+}
+
+window.__ratingsApi = { fetchRatings, submitRating, ratingsCache };
+window.dispatchEvent(new Event('ratings-ready'));
+</script>
+
+<script>
+const ORDER = ["כללי – כל הספר", "פרק א", "פרק ב", "פרק ג", "פרק ד", "פרק ה", "פרק ו", "פרק ז", "פרק י", "פרק יא", "פרק יד", "פרק יז", "פרק יח", "פרק יט", "פרק כ", "פרק כב", "פרק כד"];
+const FLAT_ITEMS = [{"id": "x_4cebe9263abc", "name": "מצגות לשמואל ב", "type": "folder", "size": "", "topic": "כללי – כל הספר", "category": "תיקיות וקישורים", "url": "https://drive.google.com/drive/folders/1izeQVPgDDFlxqxW6PQPHvAxEixdvS7Ei"}, {"id": "x_1be25ad3ca7d", "name": "שמואל ב – שיעורים מוקלטים מוסברים ללמידה מרחוק", "type": "web", "size": "", "topic": "כללי – כל הספר", "category": "שיעורים - סרטונים ומצגות", "url": "https://did.li/SMUELB"}, {"id": "x_881749e818fd", "name": "הדרכה: דוד ובת שבע", "type": "video", "size": "", "topic": "כללי – כל הספר", "category": "הדרכה ותכנון למורה", "url": "https://youtu.be/2S68qH5OiF8"}, {"id": "x_8e3910182ef3", "name": "תכנית (מתווים) ומהלכי שיעורים - שמ\"ב, באתר", "type": "web", "size": "", "topic": "כללי – כל הספר", "category": "הדרכה ותכנון למורה", "url": "https://did.li/4Uprl"}, {"id": "1VUBheUBvVjt71WnfLgxqSTQO5caGOwEr", "name": "שמואל ב' פרק ב", "type": "ppt", "size": "1.1MB", "topic": "פרק ב", "category": "מצגות", "url": "files/%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%27%20%D7%A4%D7%A8%D7%A7%20%D7%91.pptx"}, {"id": "1EI0I1gPY3X5iutGGQnhW2hmKSLbCuhn4", "name": "שמואל ב פרק ד", "type": "ppt", "size": "165KB", "topic": "פרק ד", "category": "מצגות", "url": "files/%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%A4%D7%A8%D7%A7%20%D7%93.pptx"}, {"id": "1YEAqaLBjepBPPsQuPM-eqQGVGiu1yJk1", "name": "שמואל ב פרק א", "type": "ppt", "size": "1.6MB", "topic": "פרק א", "category": "מצגות", "url": "files/%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%A4%D7%A8%D7%A7%20%D7%90.pptx"}, {"id": "130NL__RqvFiuYBwB5Uyuxt6OxsmKSwAv", "name": "שמואל ב פרק ג", "type": "ppt", "size": "1.2MB", "topic": "פרק ג", "category": "מצגות", "url": "files/%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%A4%D7%A8%D7%A7%20%D7%92.pptx"}, {"id": "x_2fa3b1b7c45f", "name": "חומרים על שמואל ב – בית המלמד (OneDrive)", "type": "web", "size": "", "topic": "כללי – כל הספר", "category": "תיקיות וקישורים", "url": "https://1drv.ms/f/c/80c2dbd02819b45c/IgBKRvbnnQXJQpTKoRxJcIVrAcxye5jA1LfYB-QdPFva9k8?e=vTSSoQ"}, {"id": "1vzGhz1SGErkhbi_H82yobbNi_SX_ZpLU", "name": "שמואל ב פרק ה", "type": "ppt", "size": "4.6MB", "topic": "פרק ה", "category": "מצגות", "url": "files/%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%A4%D7%A8%D7%A7%20%D7%94.pptx"}, {"id": "x_4541b2bb4db8", "name": "סרטונים ומצגות עזר לכל יחידות ההוראה – שמ״ב", "type": "web", "size": "", "topic": "כללי – כל הספר", "category": "שיעורים - סרטונים ומצגות", "url": "https://did.li/n6Q5q"}, {"id": "1V615OlIFqGnR8Fi_XnWjhXrr48ivLt52", "name": "שמואל ב פרק ג פסוק כ- סוף", "type": "word", "size": "18KB", "topic": "פרק ג", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%A4%D7%A8%D7%A7%20%D7%92%20%D7%A4%D7%A1%D7%95%D7%A7%20%D7%9B-%20%D7%A1%D7%95%D7%A3.docx"}, {"id": "16GLYSid3OxTtXgp2RY7v5i3aIMx0f4Zq", "name": "שמואל ב פרק ג פסוקים א-כ", "type": "word", "size": "18KB", "topic": "פרק ג", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%A4%D7%A8%D7%A7%20%D7%92%20%D7%A4%D7%A1%D7%95%D7%A7%D7%99%D7%9D%20%D7%90-%D7%9B.docx"}, {"id": "x_bc37ca651b2c", "name": "חוברת שמואל ב כיתות ה-ו", "type": "word", "size": "194KB", "topic": "כללי – כל הספר", "category": "חוברות עבודה", "url": "files/%D7%97%D7%95%D7%91%D7%A8%D7%AA%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%9B%D7%99%D7%AA%D7%95%D7%AA%20%D7%94-%D7%95.docx"}, {"id": "x_f06c1bd867f4", "name": "חזרה א-ז שמואל ב", "type": "word", "size": "32KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%97%D7%96%D7%A8%D7%94%20%D7%90-%D7%96%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91.docx"}, {"id": "x_0e42d4909add", "name": "מבנה שמואל ב", "type": "ppt", "size": "55KB", "topic": "כללי – כל הספר", "category": "מצגות", "url": "files/%D7%9E%D7%91%D7%A0%D7%94%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91.ppt"}, {"id": "x_00759bb08ab2", "name": "שמואל ב דף סיכום", "type": "pdf", "size": "272KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%93%D7%A3%20%D7%A1%D7%99%D7%9B%D7%95%D7%9D.pdf"}, {"id": "x_077cd9015866", "name": "שמואל ב", "type": "word", "size": "793KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91.doc"}, {"id": "x_e7572a4dadb3", "name": "דף עבודה שמואל ב פרק ג", "type": "word", "size": "14KB", "topic": "פרק א", "category": "דפי עבודה ומבחנים", "url": "files/%D7%93%D7%A3%20%D7%A2%D7%91%D7%95%D7%93%D7%94%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%A4%D7%A8%D7%A7%20%D7%92.docx"}, {"id": "x_be6f00a5d18b", "name": "שמואל ב א - דף עבודה", "type": "word", "size": "27KB", "topic": "פרק א", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%90%20-%20%D7%93%D7%A3%20%D7%A2%D7%91%D7%95%D7%93%D7%94.docx"}, {"id": "x_1fa6e18b5ba9", "name": "פרקים ב-ג נכון לא נכון", "type": "word", "size": "42KB", "topic": "פרק ג", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%D7%99%D7%9D%20%D7%91-%D7%92%20%D7%A0%D7%9B%D7%95%D7%9F%20%D7%9C%D7%90%20%D7%A0%D7%9B%D7%95%D7%9F.doc"}, {"id": "x_c5e0cd95b99f", "name": "פרק ד", "type": "word", "size": "69KB", "topic": "פרק ד", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%93.doc"}, {"id": "x_de1dfd6807cc", "name": "דף חזרה שמואל ב,ה", "type": "word", "size": "51KB", "topic": "פרק ה", "category": "דפי עבודה ומבחנים", "url": "files/%D7%93%D7%A3%20%D7%97%D7%96%D7%A8%D7%94%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%2C%D7%94.doc"}, {"id": "x_355817cf0786", "name": "פרקים ד ה נכון לא נכון", "type": "word", "size": "42KB", "topic": "פרק ה", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%D7%99%D7%9D%20%D7%93%20%D7%94%20%D7%A0%D7%9B%D7%95%D7%9F%20%D7%9C%D7%90%20%D7%A0%D7%9B%D7%95%D7%9F.doc"}, {"id": "x_a407c2ae1340", "name": "yerushalmi shmueb6", "type": "word", "size": "55KB", "topic": "פרק ו", "category": "דפי עבודה ומבחנים", "url": "files/yerushalmi%20shmueb6.doc"}, {"id": "x_f6cfa6964694", "name": "דף הכנה שמואל ב,ו", "type": "word", "size": "26KB", "topic": "פרק ו", "category": "דפי עבודה ומבחנים", "url": "files/%D7%93%D7%A3%20%D7%94%D7%9B%D7%A0%D7%94%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%2C%D7%95.doc"}, {"id": "x_b3d42e77046e", "name": "פרק ו נכון לא נכון", "type": "word", "size": "41KB", "topic": "פרק ו", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%95%20%D7%A0%D7%9B%D7%95%D7%9F%20%D7%9C%D7%90%20%D7%A0%D7%9B%D7%95%D7%9F.doc"}, {"id": "x_cb468af764ad", "name": "דף הכנה שמואל ב,ז", "type": "word", "size": "26KB", "topic": "פרק ז", "category": "דפי עבודה ומבחנים", "url": "files/%D7%93%D7%A3%20%D7%94%D7%9B%D7%A0%D7%94%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%2C%D7%96.doc"}, {"id": "x_ea851f3e8b16", "name": "דף שמואל ב,ז", "type": "word", "size": "36KB", "topic": "פרק ז", "category": "דפי עבודה ומבחנים", "url": "files/%D7%93%D7%A3%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%2C%D7%96.doc"}, {"id": "x_366a7be5d02c", "name": "פרק ז נכון לא נכון", "type": "word", "size": "41KB", "topic": "פרק ז", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%96%20%D7%A0%D7%9B%D7%95%D7%9F%20%D7%9C%D7%90%20%D7%A0%D7%9B%D7%95%D7%9F.doc"}, {"id": "x_2470e216b29a", "name": "פרק י סיכום", "type": "word", "size": "15KB", "topic": "פרק י", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%99%20%D7%A1%D7%99%D7%9B%D7%95%D7%9D.docx"}, {"id": "x_24dd221de71d", "name": "דוד ובת שבע מאמר של הרב נבנצל", "type": "pdf", "size": "5.9MB", "topic": "פרק יא", "category": "דפי עבודה ומבחנים", "url": "files/%D7%93%D7%95%D7%93%20%D7%95%D7%91%D7%AA%20%D7%A9%D7%91%D7%A2%20%D7%9E%D7%90%D7%9E%D7%A8%20%D7%A9%D7%9C%20%D7%94%D7%A8%D7%91%20%D7%A0%D7%91%D7%A0%D7%A6%D7%9C.pdf"}, {"id": "x_87595c1ec3cd", "name": "דוד ובת שבע מוגה 2", "type": "word", "size": "126KB", "topic": "פרק יא", "category": "דפי עבודה ומבחנים", "url": "files/%D7%93%D7%95%D7%93%20%D7%95%D7%91%D7%AA%20%D7%A9%D7%91%D7%A2%20%D7%9E%D7%95%D7%92%D7%94%202.doc"}, {"id": "x_af7c1a6553e1", "name": "דף שמואל ב,יא", "type": "word", "size": "38KB", "topic": "פרק יא", "category": "דפי עבודה ומבחנים", "url": "files/%D7%93%D7%A3%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%2C%D7%99%D7%90.doc"}, {"id": "x_ad3901014d30", "name": "הסבר הרב שלמה לוינשטיין למעשה דוד ובת שבע", "type": "pdf", "size": "2.8MB", "topic": "פרק יא", "category": "דפי עבודה ומבחנים", "url": "files/%D7%94%D7%A1%D7%91%D7%A8%20%D7%94%D7%A8%D7%91%20%D7%A9%D7%9C%D7%9E%D7%94%20%D7%9C%D7%95%D7%99%D7%A0%D7%A9%D7%98%D7%99%D7%99%D7%9F%20%D7%9C%D7%9E%D7%A2%D7%A9%D7%94%20%D7%93%D7%95%D7%93%20%D7%95%D7%91%D7%AA%20%D7%A9%D7%91%D7%A2.pdf"}, {"id": "x_b43389c37aa1", "name": "מתווה מפורט שמואל ב יא-יב", "type": "word", "size": "49KB", "topic": "פרק יא", "category": "דפי עבודה ומבחנים", "url": "files/%D7%9E%D7%AA%D7%95%D7%95%D7%94%20%D7%9E%D7%A4%D7%95%D7%A8%D7%98%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%20%D7%99%D7%90-%D7%99%D7%91.docx"}, {"id": "x_586f6ae78b98", "name": "פרק יא דוד ובת שבע סיכום", "type": "word", "size": "15KB", "topic": "פרק יא", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%99%D7%90%20%D7%93%D7%95%D7%93%20%D7%95%D7%91%D7%AA%20%D7%A9%D7%91%D7%A2%20%D7%A1%D7%99%D7%9B%D7%95%D7%9D.docx"}, {"id": "x_821359dbe3ac", "name": "פרק יב נכון לא נכון", "type": "word", "size": "17KB", "topic": "פרק יא", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%99%D7%91%20%D7%A0%D7%9B%D7%95%D7%9F%20%D7%9C%D7%90%20%D7%A0%D7%9B%D7%95%D7%9F.docx"}, {"id": "x_553e3a1ccc19", "name": "פרק יב סיכום להשלמה", "type": "word", "size": "15KB", "topic": "פרק יא", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%99%D7%91%20%D7%A1%D7%99%D7%9B%D7%95%D7%9D%20%D7%9C%D7%94%D7%A9%D7%9C%D7%9E%D7%94.docx"}, {"id": "x_7ba396682c55", "name": "פרק יב סיכום", "type": "word", "size": "15KB", "topic": "פרק יא", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%99%D7%91%20%D7%A1%D7%99%D7%9B%D7%95%D7%9D.docx"}, {"id": "x_77ebc718dd8e", "name": "תרשים דוד ובת שבע ערוך", "type": "word", "size": "29KB", "topic": "פרק יא", "category": "דפי עבודה ומבחנים", "url": "files/%D7%AA%D7%A8%D7%A9%D7%99%D7%9D%20%D7%93%D7%95%D7%93%20%D7%95%D7%91%D7%AA%20%D7%A9%D7%91%D7%A2%20%D7%A2%D7%A8%D7%95%D7%9A.doc"}, {"id": "x_b7ba25dca025", "name": "פרק יד סיכום", "type": "word", "size": "15KB", "topic": "פרק יד", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%99%D7%93%20%D7%A1%D7%99%D7%9B%D7%95%D7%9D.docx"}, {"id": "x_a636e2e0a415", "name": "פרק יז סיכום", "type": "word", "size": "15KB", "topic": "פרק יז", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%99%D7%96%20%D7%A1%D7%99%D7%9B%D7%95%D7%9D.docx"}, {"id": "x_44dd35e2d695", "name": "מות  אבשלום", "type": "word", "size": "15KB", "topic": "פרק יח", "category": "דפי עבודה ומבחנים", "url": "files/%D7%9E%D7%95%D7%AA%20%20%D7%90%D7%91%D7%A9%D7%9C%D7%95%D7%9D.docx"}, {"id": "x_5d749b809ee1", "name": "ביאור הקינה - דף עבודה, שמואל ב, יח-כז", "type": "word", "size": "15KB", "topic": "פרק יט", "category": "דפי עבודה ומבחנים", "url": "files/%D7%91%D7%99%D7%90%D7%95%D7%A8%20%D7%94%D7%A7%D7%99%D7%A0%D7%94%20-%20%D7%93%D7%A3%20%D7%A2%D7%91%D7%95%D7%93%D7%94%2C%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%2C%20%D7%99%D7%97-%D7%9B%D7%96.docx"}, {"id": "x_0e6cf55fb9cb", "name": "דף עבודה קינת דוד", "type": "word", "size": "24KB", "topic": "פרק יט", "category": "דפי עבודה ומבחנים", "url": "files/%D7%93%D7%A3%20%D7%A2%D7%91%D7%95%D7%93%D7%94%20%D7%A7%D7%99%D7%A0%D7%AA%20%D7%93%D7%95%D7%93.doc"}, {"id": "x_3ecc2808db10", "name": "מבחן  פרקים   טו-יט", "type": "word", "size": "19KB", "topic": "פרק יט", "category": "דפי עבודה ומבחנים", "url": "files/%D7%9E%D7%91%D7%97%D7%9F%20%20%D7%A4%D7%A8%D7%A7%D7%99%D7%9D%20%20%20%D7%98%D7%95-%D7%99%D7%98.docx"}, {"id": "x_21c5cc36f1e6", "name": "פרק יט", "type": "word", "size": "16KB", "topic": "פרק יט", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%99%D7%98.docx"}, {"id": "x_e51a577969fd", "name": "פרק כ סיכום", "type": "word", "size": "16KB", "topic": "פרק כ", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%9B%20%D7%A1%D7%99%D7%9B%D7%95%D7%9D.docx"}, {"id": "x_3b028dbb70cb", "name": "דף שמואל ב, כב", "type": "word", "size": "41KB", "topic": "פרק כב", "category": "דפי עבודה ומבחנים", "url": "files/%D7%93%D7%A3%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91%2C%20%D7%9B%D7%91.doc"}, {"id": "x_609e9c9b797f", "name": "פרק כד סיכום", "type": "word", "size": "16KB", "topic": "פרק כד", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%A8%D7%A7%20%D7%9B%D7%93%20%D7%A1%D7%99%D7%9B%D7%95%D7%9D.docx"}, {"id": "x_623f0c06bd01", "name": "פא - פג מבחן", "type": "word", "size": "51KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%90%20-%20%D7%A4%D7%92%20%D7%9E%D7%91%D7%97%D7%9F.docx"}, {"id": "x_9e96747d8d21", "name": "פא - פג שאלות חזרה למבחן", "type": "word", "size": "22KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%90%20-%20%D7%A4%D7%92%20%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%97%D7%96%D7%A8%D7%94%20%D7%9C%D7%9E%D7%91%D7%97%D7%9F.docx"}, {"id": "x_6a0c8d2c717e", "name": "פא - פג תשובות לשאלות חזרה", "type": "word", "size": "24KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%90%20-%20%D7%A4%D7%92%20%D7%AA%D7%A9%D7%95%D7%91%D7%95%D7%AA%20%D7%9C%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%97%D7%96%D7%A8%D7%94.docx"}, {"id": "x_9cf710aaac47", "name": "פד - פז מבחן", "type": "word", "size": "54KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%93%20-%20%D7%A4%D7%96%20%D7%9E%D7%91%D7%97%D7%9F.docx"}, {"id": "x_0a9cd063e120", "name": "פיג - פיח שאלות חזרה לבחן", "type": "word", "size": "19KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%99%D7%92%20-%20%D7%A4%D7%99%D7%97%20%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%97%D7%96%D7%A8%D7%94%20%D7%9C%D7%91%D7%97%D7%9F.docx"}, {"id": "x_b38540e64564", "name": "פיג - פיח תשובות לשאלות חזרה", "type": "word", "size": "28KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%99%D7%92%20-%20%D7%A4%D7%99%D7%97%20%D7%AA%D7%A9%D7%95%D7%91%D7%95%D7%AA%20%D7%9C%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%97%D7%96%D7%A8%D7%94.docx"}, {"id": "x_61fba2d5e214", "name": "פיג -פיח מבחן", "type": "word", "size": "54KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A4%D7%99%D7%92%20-%D7%A4%D7%99%D7%97%20%D7%9E%D7%91%D7%97%D7%9F.docx"}, {"id": "x_16a741df1ffc", "name": "שאלות בקיאות א-ה", "type": "word", "size": "28KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%91%D7%A7%D7%99%D7%90%D7%95%D7%AA%20%D7%90-%D7%94.doc"}, {"id": "x_546c130a93d6", "name": "שאלות ותשובות על שמואל ב", "type": "word", "size": "31KB", "topic": "כללי – כל הספר", "category": "דפי עבודה ומבחנים", "url": "files/%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%95%D7%AA%D7%A9%D7%95%D7%91%D7%95%D7%AA%20%D7%A2%D7%9C%20%D7%A9%D7%9E%D7%95%D7%90%D7%9C%20%D7%91.docx"}];
+const CATEGORY_ICONS = {"שיעורים - סרטונים ומצגות": "🎬", "דפי עבודה ומבחנים": "✏️", "מצגות": "🖥️", "קיר ומפות ועיצוב": "🗺️", "חומרים כלליים נוספים": "🗂️", "חוברות עבודה": "📚", "משחקים וחידונים": "🧩", "הדרכה ותכנון למורה": "🎓", "תיקיות וקישורים": "🔗"};
+const CATEGORY_ORDER = ["שיעורים - סרטונים ומצגות", "דפי עבודה ומבחנים", "מצגות", "קיר ומפות ועיצוב", "חומרים כלליים נוספים", "חוברות עבודה", "הדרכה ותכנון למורה", "תיקיות וקישורים"];
+const TOPIC_EMOJI = {"כללי – כל הספר": "📚", "פרק א": "📖", "פרק ב": "📖", "פרק ג": "📖", "פרק ד": "📖", "פרק ה": "📖", "פרק ו": "📖", "פרק ז": "📖", "פרק י": "📖", "פרק יא": "📖", "פרק יד": "📖", "פרק יז": "📖", "פרק יח": "📖", "פרק יט": "📖", "פרק כ": "📖", "פרק כב": "📖", "פרק כד": "📖"};
+const TYPE_META = {"pdf": {"label": "PDF", "color": "#e11d48", "bg": "#fde8ec", "icon": "📕"}, "word": {"label": "Word", "color": "#2563eb", "bg": "#e8eefd", "icon": "📘"}, "ppt": {"label": "PowerPoint", "color": "#ea580c", "bg": "#fdece0", "icon": "📙"}, "excel": {"label": "Excel", "color": "#16a34a", "bg": "#e7f7ec", "icon": "📗"}, "image": {"label": "תמונה", "color": "#9333ea", "bg": "#f3e8fd", "icon": "🖼️"}, "audio": {"label": "שמע", "color": "#c2410c", "bg": "#ffedd5", "icon": "🎵"}, "video": {"label": "וידאו", "color": "#be185d", "bg": "#fce7f3", "icon": "🎬"}, "web": {"label": "דף אינטרנט", "color": "#0d9488", "bg": "#e6fbf8", "icon": "🌐"}, "other": {"label": "קובץ", "color": "#64748b", "bg": "#eef1f5", "icon": "📄"}, "folder": {"label": "תיקייה", "color": "#0d9488", "bg": "#e6fbf8", "icon": "📁"}};
+
+let currentTopic = ORDER[0];
+let currentQuery = '';
+let showHidden = false;
+let moveTargetId = null;
+
+const LS_PREFIX = 'shmuel_b_v1_';
+const RENAME_KEY = LS_PREFIX + 'renamed';
+const HIDDEN_KEY = LS_PREFIX + 'hidden';
+const MOVE_KEY = LS_PREFIX + 'moved';
+const MY_RATING_KEY = LS_PREFIX + 'myratings';
+
+function loadSet(key) { try { return new Set(JSON.parse(localStorage.getItem(key) || '[]')); } catch (e) { return new Set(); } }
+function loadMap(key) { try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) { return {}; } }
+function saveSet(key, set) { try { localStorage.setItem(key, JSON.stringify([...set])); } catch (e) {} }
+function saveMap(key, map) { try { localStorage.setItem(key, JSON.stringify(map)); } catch (e) {} }
+
+let HIDDEN = loadSet(HIDDEN_KEY);
+let RENAMED = loadMap(RENAME_KEY);
+let MOVED = loadMap(MOVE_KEY);
+let MY_RATINGS = loadMap(MY_RATING_KEY);
+
+function isHidden(id) { return HIDDEN.has(id); }
+function displayNameFor(item) { return RENAMED[item.id] || item.name; }
+function effectiveTopic(item) { return (MOVED[item.id] && MOVED[item.id].topic) || item.topic; }
+function effectiveCategory(item) { return (MOVED[item.id] && MOVED[item.id].category) || item.category; }
+
+function toggleHidden(id) { if (HIDDEN.has(id)) HIDDEN.delete(id); else HIDDEN.add(id); saveSet(HIDDEN_KEY, HIDDEN); render(); }
+
+function renderRatingBoxContent(box, id) {
+  const api = window.__ratingsApi;
+  const data = (api && api.ratingsCache.get(id)) || null;
+  const avg = data && data.count ? data.sum / data.count : 0;
+  const count = data ? data.count : 0;
+  const mine = MY_RATINGS[id] || 0;
+  box.classList.toggle('mine', !!mine);
+  box.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const s = document.createElement('span');
+    s.className = 'rating-star' + (i <= Math.round(avg) ? ' filled' : '');
+    s.textContent = i <= Math.round(avg) ? '★' : '☆';
+    s.title = mine ? `הדירוג שלך: ${mine}` : `דרגו ${i}`;
+    s.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); rateItem(id, i, box); });
+    box.appendChild(s);
+  }
+  const meta = document.createElement('span');
+  meta.className = 'rating-meta';
+  meta.textContent = count ? `${avg.toFixed(1)} (${count})` : 'דרגו ראשונים';
+  box.appendChild(meta);
+}
+
+function buildRatingBox(id) {
+  const box = document.createElement('span');
+  box.className = 'rating-box';
+  box.id = 'rt-' + id;
+  renderRatingBoxContent(box, id);
+  return box;
+}
+
+function rateItem(id, value, box) {
+  const old = MY_RATINGS[id] || 0;
+  MY_RATINGS[id] = value;
+  saveMap(MY_RATING_KEY, MY_RATINGS);
+  const api = window.__ratingsApi;
+  if (!api) return;
+  const cur = api.ratingsCache.get(id) || { sum: 0, count: 0 };
+  const nextSum = cur.sum + (old ? value - old : value);
+  const nextCount = cur.count + (old ? 0 : 1);
+  api.ratingsCache.set(id, { sum: nextSum, count: nextCount });
+  renderRatingBoxContent(box, id);
+  api.submitRating(id, value, old).catch(err => {
+    console.error('שגיאה בשמירת הדירוג', err);
+    alert('שגיאה בשמירת הדירוג לשרת - נסו שוב מאוחר יותר');
+  });
+}
+
+function updateRatingsUI(ids) {
+  if (!ids.length) return;
+  const doIt = () => {
+    window.__ratingsApi.fetchRatings(ids).then(() => {
+      ids.forEach(id => {
+        const box = document.getElementById('rt-' + id);
+        if (box) renderRatingBoxContent(box, id);
+      });
+    });
+  };
+  if (window.__ratingsApi) doIt();
+  else window.addEventListener('ratings-ready', doIt, { once: true });
+}
+
+function renameItem(id, currentName) {
+  const newName = prompt('שם חדש לתצוגה בקטלוג:', currentName);
+  if (newName === null) return;
+  const trimmed = newName.trim();
+  if (!trimmed) delete RENAMED[id]; else RENAMED[id] = trimmed;
+  saveMap(RENAME_KEY, RENAMED);
+  render();
+}
+
+function openMoveModal(id, curTopic, curCategory) {
+  moveTargetId = id;
+  const tSel = document.getElementById('moveTopicSelect');
+  const cSel = document.getElementById('moveCategorySelect');
+  tSel.innerHTML = ORDER.map(t => `<option value="${t}">${TOPIC_EMOJI[t] || ''} ${t}</option>`).join('');
+  tSel.value = curTopic;
+  cSel.innerHTML = CATEGORY_ORDER.map(c => `<option value="${c}">${CATEGORY_ICONS[c] || ''} ${c}</option>`).join('');
+  cSel.value = CATEGORY_ORDER.includes(curCategory) ? curCategory : CATEGORY_ORDER[0];
+  document.getElementById('moveModal').classList.add('open');
+}
+function closeMoveModal() { document.getElementById('moveModal').classList.remove('open'); moveTargetId = null; }
+
+document.getElementById('moveCancelBtn').addEventListener('click', closeMoveModal);
+document.getElementById('moveModal').addEventListener('click', (e) => { if (e.target.id === 'moveModal') closeMoveModal(); });
+document.getElementById('moveSaveBtn').addEventListener('click', () => {
+  if (!moveTargetId) return;
+  const topic = document.getElementById('moveTopicSelect').value;
+  const category = document.getElementById('moveCategorySelect').value;
+  MOVED[moveTargetId] = { topic, category };
+  saveMap(MOVE_KEY, MOVED);
+  closeMoveModal();
+  render();
+});
+
+document.getElementById('resetLink').addEventListener('click', () => {
+  if (!confirm('לאפס שינויי שם, הסתרות והעברות אישיות שביצעת בדפדפן זה? (הדירוגים המשותפים בענן לא יימחקו)')) return;
+  localStorage.removeItem(RENAME_KEY);
+  localStorage.removeItem(HIDDEN_KEY); localStorage.removeItem(MOVE_KEY);
+  HIDDEN = new Set(); RENAMED = {}; MOVED = {};
+  render();
+});
+
+function buildDriveUrl(id) { return 'https://drive.google.com/file/d/' + id + '/view'; }
+
+function buildGroups() {
+  const groups = {};
+  ORDER.forEach(t => { groups[t] = {}; });
+  FLAT_ITEMS.forEach(item => {
+    if (isHidden(item.id) && !showHidden) return;
+    const t = effectiveTopic(item);
+    const c = effectiveCategory(item);
+    if (!groups[t]) groups[t] = {};
+    if (!groups[t][c]) groups[t][c] = [];
+    groups[t][c].push(item);
+  });
+  return groups;
+}
+
+function renderTabs(groups) {
+  const tabsEl = document.getElementById('tabs');
+  tabsEl.innerHTML = ORDER.map(t => {
+    const cats = groups[t] || {};
+    const n = Object.values(cats).reduce((s, arr) => s + arr.length, 0);
+    const active = t === currentTopic ? ' active' : '';
+    return `<button class="tab-btn${active}" data-topic="${t}">
+      <span class="tab-emoji">${TOPIC_EMOJI[t] || '📄'}</span>
+      <span class="tab-label">${t}</span>
+      <span class="tab-count">${n}</span></button>`;
+  }).join('');
+}
+
+function render() {
+  const groups = buildGroups();
+  renderTabs(groups);
+
+  const main = document.getElementById('main');
+  const empty = document.getElementById('emptyState');
+  main.innerHTML = '';
+
+  const q = currentQuery.trim();
+  const topicsToShow = q ? ORDER : [currentTopic];
+  let anyResults = false;
+  const visibleIds = [];
+
+  topicsToShow.forEach(topic => {
+    const cats = groups[topic] || {};
+    const sortedCats = CATEGORY_ORDER.filter(c => cats[c] && cats[c].length);
+    Object.keys(cats).forEach(c => { if (!sortedCats.includes(c)) sortedCats.push(c); });
+
+    let topicHasResults = false;
+    let topicTotal = 0;
+    const catBlocks = [];
+
+    sortedCats.forEach(cat => {
+      const items = (cats[cat] || []).filter(it => !q || displayNameFor(it).includes(q));
+      if (items.length === 0) return;
+      topicHasResults = true;
+      topicTotal += items.length;
+
+      const group = document.createElement('div');
+      group.className = 'category-group';
+      const header = document.createElement('div');
+      header.className = 'category-header';
+      header.innerHTML = `<span class="category-title">${CATEGORY_ICONS[cat] || '📄'} ${cat}</span>
+        <span style="display:flex;align-items:center;">
+          <span class="category-count">${items.length}</span>
+          <span class="category-toggle">▾</span>
+        </span>`;
+      const list = document.createElement('div');
+      list.className = 'file-list';
+      items.forEach(item => {
+        const meta = TYPE_META[item.type] || TYPE_META.other;
+        const hidden = isHidden(item.id);
+        const renamed = !!RENAMED[item.id];
+        const name = displayNameFor(item);
+        visibleIds.push(item.id);
+
+        const rowWrap = document.createElement('div');
+        rowWrap.className = 'file-row-wrap' + (hidden ? ' is-hidden' : '');
+
+        const ratingBox = buildRatingBox(item.id);
+
+        const renameBtn = document.createElement('button');
+        renameBtn.className = 'icon-btn';
+        renameBtn.type = 'button';
+        renameBtn.title = 'שינוי שם תצוגה';
+        renameBtn.textContent = '✏️';
+        renameBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); renameItem(item.id, name); });
+
+        const moveBtn = document.createElement('button');
+        moveBtn.className = 'icon-btn';
+        moveBtn.type = 'button';
+        moveBtn.title = 'העברה לנושא/קטגוריה אחרים';
+        moveBtn.textContent = '📁';
+        moveBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); openMoveModal(item.id, topic, cat); });
+
+        const hideBtn = document.createElement('button');
+        hideBtn.className = 'icon-btn';
+        hideBtn.type = 'button';
+        hideBtn.title = hidden ? 'שחזור הקובץ (הצגה מחדש)' : 'הסתרת הקובץ';
+        hideBtn.textContent = hidden ? '👁️' : '🙈';
+        hideBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); toggleHidden(item.id); });
+
+        const row = document.createElement('a');
+        row.className = 'file-row';
+        row.href = item.url || buildDriveUrl(item.id);
+        row.target = '_blank';
+        row.rel = 'noopener noreferrer';
+        row.innerHTML = `
+          <span class="file-icon" style="background:${meta.bg}">${meta.icon}</span>
+          <span class="file-name${renamed ? ' renamed' : ''}">${name}</span>
+          ${item.size ? `<span class="file-size">${item.size}</span>` : ''}
+          ${hidden ? '<span class="hidden-badge">מוסתר</span>' : ''}
+          <span class="file-type-badge" style="background:${meta.bg};color:${meta.color}">${meta.label}</span>
+        `;
+
+        rowWrap.appendChild(ratingBox);
+        rowWrap.appendChild(renameBtn);
+        rowWrap.appendChild(moveBtn);
+        rowWrap.appendChild(hideBtn);
+        rowWrap.appendChild(row);
+        list.appendChild(rowWrap);
+      });
+      header.addEventListener('click', () => {
+        list.classList.toggle('collapsed');
+        header.querySelector('.category-toggle').textContent = list.classList.contains('collapsed') ? '◂' : '▾';
+      });
+      group.appendChild(header);
+      group.appendChild(list);
+      catBlocks.push(group);
+    });
+
+    if (!topicHasResults) return;
+    anyResults = true;
+
+    if (q) {
+      const heading = document.createElement('div');
+      heading.className = 'topic-heading';
+      heading.innerHTML = `<h2>${TOPIC_EMOJI[topic] || '📄'} ${topic}</h2><span class="count">${topicTotal} תוצאות</span>`;
+      main.appendChild(heading);
+    }
+    catBlocks.forEach(b => main.appendChild(b));
+  });
+
+  empty.style.display = anyResults ? 'none' : 'block';
+  updateRatingsUI(visibleIds);
+}
+
+document.getElementById('search').addEventListener('input', (e) => { currentQuery = e.target.value; render(); });
+document.getElementById('showHiddenChk').addEventListener('change', (e) => { showHidden = e.target.checked; render(); });
+document.getElementById('tabs').addEventListener('click', (e) => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  currentTopic = btn.dataset.topic;
+  document.getElementById('search').value = '';
+  currentQuery = '';
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
